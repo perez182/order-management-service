@@ -1,0 +1,7 @@
+services:
+  order-management-service:
+    build: .
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
