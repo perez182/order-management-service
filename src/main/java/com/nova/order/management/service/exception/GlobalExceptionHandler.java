@@ -12,10 +12,29 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import com.nova.order.management.service.exception.exceptions.BadRequestException;
+import com.nova.order.management.service.exception.exceptions.ResourceNotFoundException;
+import com.nova.order.management.service.exception.exceptions.ServiceUnavailableException;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getDetails());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBadRequest(BadRequestException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getDetails());
+    }
+    
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Map<String, String>> handleServiceUnavailable(ServiceUnavailableException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Map.of("error", ex.getMessage()));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
@@ -35,26 +54,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, List<String>>> handleReadableException(HttpMessageNotReadableException ex) {
-        Map<String, List<String>> response = new HashMap<>();
-        String error="Invalid format in one or more fields";
-        List<String> errors = new ArrayList<>();
-        errors.add(error);
-        response.put("errors", errors);
-        
-        return ResponseEntity.badRequest().body(response);
-    }
-
-/* 
-    @ExceptionHandler(CallNotPermittedException.class)
-    public ResponseEntity<ErrorDetails> handleCircuitBreakerOpen(CallNotPermittedException ex) {
-        ErrorDetails details = new ErrorDetails(
-            "El servicio no está disponible temporalmente (Circuito Abierto)",
-            HttpStatus.SERVICE_UNAVAILABLE
-        );
-        return new ResponseEntity<>(details, HttpStatus.SERVICE_UNAVAILABLE);
-    }
-*/    
-    
 }
