@@ -14,10 +14,11 @@ import com.nova.order.management.service.exception.exceptions.ResourceNotFoundEx
 import com.nova.order.management.service.exception.exceptions.ServiceUnavailableException;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class OrderClient {
 

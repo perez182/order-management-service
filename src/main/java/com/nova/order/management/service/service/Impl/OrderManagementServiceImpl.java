@@ -26,7 +26,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     private final OrderClient orderClient;
 
     @Override
-    @CircuitBreaker(name = "customerServiceCB", fallbackMethod = "fallbackCreateOrder")
+    @CircuitBreaker(name = "externalServicesCB", fallbackMethod = "fallbackCreateOrder")
     public OrderManagementResponse createOrder(OrderRequest request) {
         log.info("Starting order orchestration for customer ID: {}", request.getCustomerId());
 
